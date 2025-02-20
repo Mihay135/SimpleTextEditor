@@ -5,17 +5,17 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class StringChangeManager {
-	private int currentKey;
+	private int currentPointer;
 	private List<String> changedStringVersions = new LinkedList<String>();
 
 	
 	public StringChangeManager(String initialString) {
-		this.currentKey = 0;
+		this.currentPointer = 0;
 		this.changedStringVersions.add(initialString);
 	}
 	
 	public String getCurrentString() {
-		return changedStringVersions.get(currentKey);
+		return changedStringVersions.get(currentPointer);
 	}
 	
 	public int getNumberOfChanges() {
@@ -23,16 +23,16 @@ public class StringChangeManager {
 	}
 	
 	public boolean hasNextString() {
-		return currentKey < getNumberOfChanges();
+		return currentPointer < getNumberOfChanges();
 	}
 	
 	public boolean hasPrevoiusString() {
-		return currentKey > 0;
+		return currentPointer > 0;
 	}
 
 	public void saveStringChange(String updatedString) {
 		changedStringVersions.add(updatedString);
-		currentKey++;
+		currentPointer++;
 	}
 	
 	public String getStringAtIndex(Integer index) {
@@ -43,18 +43,18 @@ public class StringChangeManager {
 	}
 	
 	public String getPreviousString() {
-		currentKey = (currentKey <= 0) ? 0 : currentKey - 1;
-		return changedStringVersions.get(currentKey);
+		currentPointer = (currentPointer <= 0) ? 0 : currentPointer - 1;
+		return changedStringVersions.get(currentPointer);
 	}
 	
 	public String getNextString() {
 		int max = getNumberOfChanges();
-		currentKey = (currentKey >= max) ? max : currentKey + 1;
-		return changedStringVersions.get(currentKey);
+		currentPointer = (currentPointer >= max) ? max : currentPointer + 1;
+		return changedStringVersions.get(currentPointer);
 	}
 	
 	public void deleteFollowingChangesAfterCurrent() {
-		Iterator<String> iterator = changedStringVersions.listIterator(currentKey+1);
+		Iterator<String> iterator = changedStringVersions.listIterator(currentPointer+1);
 		while (iterator.hasNext()) {
 			iterator.next();
 			iterator.remove();	
@@ -62,7 +62,7 @@ public class StringChangeManager {
 	}
 	
 	public void resetWithNewString(String newString) {
-		currentKey = 0;
+		currentPointer = 0;
 		changedStringVersions.clear();
 		changedStringVersions.add(newString);
 		System.out.println(changedStringVersions.size());

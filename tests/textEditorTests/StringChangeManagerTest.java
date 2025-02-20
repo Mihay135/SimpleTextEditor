@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import changeManager.StringChangeManager;
 
-class CustomStringChangeManagerTest {
+class StringChangeManagerTest {
 
 	@Test
 	void testStringChangeManagerInitialStringIsCorrect() {
