@@ -110,4 +110,63 @@ class CustomStringChangeManagerTest {
 		assertEquals("Updated", stringManager.getCurrentString());
 	}
 	
+	@Test
+	void testGetNumberOfChangesIsUpdatedCorrectly() {
+		String initialString = "";
+		CustomStringChangeManager stringManager = new CustomStringChangeManager(initialString);
+		
+		String updatedString1 = initialString + "Updated";
+		stringManager.saveStringChange(updatedString1);
+		String updatedString2 = updatedString1 + ", Updated2";
+		stringManager.saveStringChange(updatedString2);
+		
+		assertEquals(2, stringManager.getNumberOfChanges());
+	}
+	
+	@Test
+	void testDeleteFromCurrentCorrectlyUpdatesPointers() {
+		String initialString = "";
+		CustomStringChangeManager stringManager = new CustomStringChangeManager(initialString);
+		
+		String updatedString1 = initialString + "Updated";
+		stringManager.saveStringChange(updatedString1);
+		String updatedString2 = updatedString1 + ", Updated2";
+		stringManager.saveStringChange(updatedString2);
+		
+		//move pointer currentKey - 1
+		stringManager.getPreviousString();
+		stringManager.deleteFollowingChangesFromCurrent();
+		
+		assertEquals("Updated", stringManager.getCurrentString());
+		assertFalse(stringManager.hasNextString());
+	}
+	
+	@Test
+	void testDeleteFromCurrentCorrectlyUpdatesPointersWithInitialValues() {
+		String initialString = "First";
+		CustomStringChangeManager stringManager = new CustomStringChangeManager(initialString);
+		
+		String updatedString1 = initialString + ", Updated1";
+		stringManager.saveStringChange(updatedString1);
+		String updatedString2 = updatedString1 + ", Updated2";
+		stringManager.saveStringChange(updatedString2);
+		
+		stringManager.resetWithNewString("new");
+		
+		assertEquals("new", stringManager.getCurrentString());
+		assertFalse(stringManager.hasNextString());
+	}
+	
+	@Test
+	void testResetWithNewValueEmptiesMap() {
+		String initialString = "First";
+		CustomStringChangeManager stringManager = new CustomStringChangeManager(initialString);
+		
+		//move pointer currentKey - 1
+		stringManager.getPreviousString();
+		stringManager.deleteFollowingChangesFromCurrent();
+		
+		assertEquals("First", stringManager.getCurrentString());
+		assertFalse(stringManager.hasNextString());
+	}
 }
