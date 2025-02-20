@@ -135,7 +135,11 @@ public class SimpleTextEditor extends JFrame implements ActionListener{
 
 	//Edit Menu for things like "Undo" or "Redo" or else
 		JMenu editMenu = new JMenu("Edit");
+		JMenuItem undo = new JMenuItem("Undo");
+		JMenuItem redo = new JMenuItem("Redo");
 		
+		editMenu.add(undo);
+		editMenu.add(redo);
 		
 	//Menus Added to MenuBar
 		menuBar.add(fileMenu);
