@@ -4,14 +4,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-import textEditor.CustomStringChangeManager;
+import changeManager.StringChangeManager;
 
 class CustomStringChangeManagerTest {
 
 	@Test
 	void testStringChangeManagerInitialStringIsCorrect() {
 		String initialString = "initial";
-		CustomStringChangeManager stringManager = new CustomStringChangeManager(initialString);
+		StringChangeManager stringManager = new StringChangeManager(initialString);
 		
 		assertEquals("initial", stringManager.getCurrentString());
 	}
@@ -19,7 +19,7 @@ class CustomStringChangeManagerTest {
 	@Test
 	void testStringChangeManagerSaveStringMovesCurrentStringPointer() {
 		String initialString = "";
-		CustomStringChangeManager stringManager = new CustomStringChangeManager(initialString);
+		StringChangeManager stringManager = new StringChangeManager(initialString);
 		
 		String updatedString = initialString + "Updated";
 		stringManager.saveStringChange(updatedString);
@@ -30,7 +30,7 @@ class CustomStringChangeManagerTest {
 	@Test
 	void testStringChangeManagerPrevoiusStringChange() {
 		String initialString = "";
-		CustomStringChangeManager stringManager = new CustomStringChangeManager(initialString);
+		StringChangeManager stringManager = new StringChangeManager(initialString);
 		
 		String updatedString = initialString + "Updated";
 		stringManager.saveStringChange(updatedString);
@@ -41,7 +41,7 @@ class CustomStringChangeManagerTest {
 	@Test
 	void testStringChangeManagerPrevoiusStringIsTheSameWhenStartOfChangesIsReached() {
 		String initialString = "";
-		CustomStringChangeManager stringManager = new CustomStringChangeManager(initialString);
+		StringChangeManager stringManager = new StringChangeManager(initialString);
 		
 		assertEquals("", stringManager.getPreviousString());
 	}
@@ -49,7 +49,7 @@ class CustomStringChangeManagerTest {
 	@Test
 	void testStringChangeManagerNextStringIsTheSameWhenEndIsReached() {
 		String initialString = "";
-		CustomStringChangeManager stringManager = new CustomStringChangeManager(initialString);
+		StringChangeManager stringManager = new StringChangeManager(initialString);
 		
 		String updatedString = initialString + "Updated";
 		stringManager.saveStringChange(updatedString);
@@ -60,7 +60,7 @@ class CustomStringChangeManagerTest {
 	@Test
 	void testHasNextStringOnEmptyStrings() {
 		String initialString = "";
-		CustomStringChangeManager stringManager = new CustomStringChangeManager(initialString);
+		StringChangeManager stringManager = new StringChangeManager(initialString);
 		
 		assertFalse(stringManager.hasNextString());
 	}
@@ -68,7 +68,7 @@ class CustomStringChangeManagerTest {
 	@Test
 	void testHasNextStringReturnsTrueWhenThereIsAnotherStringNext() {
 		String initialString = "";
-		CustomStringChangeManager stringManager = new CustomStringChangeManager(initialString);
+		StringChangeManager stringManager = new StringChangeManager(initialString);
 		
 		String updatedString = initialString + "Updated";
 		stringManager.saveStringChange(updatedString);
@@ -82,7 +82,7 @@ class CustomStringChangeManagerTest {
 	@Test
 	void testGetStringAtValidIndex() {
 		String initialString = "";
-		CustomStringChangeManager stringManager = new CustomStringChangeManager(initialString);
+		StringChangeManager stringManager = new StringChangeManager(initialString);
 		String updatedString = initialString + "Updated";
 		stringManager.saveStringChange(updatedString);
 		
@@ -92,7 +92,7 @@ class CustomStringChangeManagerTest {
 	@Test
 	void testGetStringAtNotValidIndexReturnsEmptyString() {
 		String initialString = "";
-		CustomStringChangeManager stringManager = new CustomStringChangeManager(initialString);
+		StringChangeManager stringManager = new StringChangeManager(initialString);
 		String updatedString = initialString + "Updated";
 		stringManager.saveStringChange(updatedString);
 		
@@ -102,7 +102,7 @@ class CustomStringChangeManagerTest {
 	@Test
 	void testGetStringAtValidIndexDoesNotMoveTheCurrentKey() {
 		String initialString = "";
-		CustomStringChangeManager stringManager = new CustomStringChangeManager(initialString);
+		StringChangeManager stringManager = new StringChangeManager(initialString);
 		String updatedString = initialString + "Updated";
 		stringManager.saveStringChange(updatedString);
 		stringManager.getStringAtIndex(0);
@@ -113,7 +113,7 @@ class CustomStringChangeManagerTest {
 	@Test
 	void testGetNumberOfChangesIsUpdatedCorrectly() {
 		String initialString = "";
-		CustomStringChangeManager stringManager = new CustomStringChangeManager(initialString);
+		StringChangeManager stringManager = new StringChangeManager(initialString);
 		
 		String updatedString1 = initialString + "Updated";
 		stringManager.saveStringChange(updatedString1);
@@ -126,7 +126,7 @@ class CustomStringChangeManagerTest {
 	@Test
 	void testDeleteFromCurrentCorrectlyUpdatesPointers() {
 		String initialString = "";
-		CustomStringChangeManager stringManager = new CustomStringChangeManager(initialString);
+		StringChangeManager stringManager = new StringChangeManager(initialString);
 		
 		String updatedString1 = initialString + "Updated";
 		stringManager.saveStringChange(updatedString1);
@@ -135,16 +135,16 @@ class CustomStringChangeManagerTest {
 		
 		//move pointer currentKey - 1
 		stringManager.getPreviousString();
-		stringManager.deleteFollowingChangesFromCurrent();
+		stringManager.deleteFollowingChangesAfterCurrent();
 		
 		assertEquals("Updated", stringManager.getCurrentString());
 		assertFalse(stringManager.hasNextString());
 	}
 	
 	@Test
-	void testDeleteFromCurrentCorrectlyUpdatesPointersWithInitialValues() {
+	void testDeleteAfterCurrentCorrectlyUpdatesPointersWithInitialValues() {
 		String initialString = "First";
-		CustomStringChangeManager stringManager = new CustomStringChangeManager(initialString);
+		StringChangeManager stringManager = new StringChangeManager(initialString);
 		
 		String updatedString1 = initialString + ", Updated1";
 		stringManager.saveStringChange(updatedString1);
@@ -154,17 +154,18 @@ class CustomStringChangeManagerTest {
 		stringManager.resetWithNewString("new");
 		
 		assertEquals("new", stringManager.getCurrentString());
+		System.out.println(stringManager.getNumberOfChanges());
 		assertFalse(stringManager.hasNextString());
 	}
 	
 	@Test
-	void testResetWithNewValueEmptiesMap() {
+	void testResetWithNewValueEmptiesPreviousMemory() {
 		String initialString = "First";
-		CustomStringChangeManager stringManager = new CustomStringChangeManager(initialString);
+		StringChangeManager stringManager = new StringChangeManager(initialString);
 		
 		//move pointer currentKey - 1
 		stringManager.getPreviousString();
-		stringManager.deleteFollowingChangesFromCurrent();
+		stringManager.deleteFollowingChangesAfterCurrent();
 		
 		assertEquals("First", stringManager.getCurrentString());
 		assertFalse(stringManager.hasNextString());

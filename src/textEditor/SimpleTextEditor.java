@@ -38,6 +38,8 @@ import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import changeManager.StringChangeManager;
+
 public class SimpleTextEditor extends JFrame implements ActionListener{
 	/**
 	 * 
@@ -48,6 +50,7 @@ public class SimpleTextEditor extends JFrame implements ActionListener{
 	private Font currentFont;
 	private boolean toggleWordWrap = false;
 	private Color defaultMenuBgColor = SystemColor.menu;
+	private StringChangeManager stringChangeManager;
 	
 	public SimpleTextEditor() {
 		setTitle("Simple Text Editor");
@@ -102,6 +105,7 @@ public class SimpleTextEditor extends JFrame implements ActionListener{
 		
 		wordWrapMenuItem.addActionListener(new ActionListener() {
 			
+		//When word wrap is active the bg should be a different color so it is noticeable
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				toggleWordWrap = !toggleWordWrap;
@@ -113,10 +117,12 @@ public class SimpleTextEditor extends JFrame implements ActionListener{
 				}
 			}
 		});
+		
 		fontMenuItem.addActionListener(this);
 		textColorMenuItem.addActionListener(this);
 		bgColorMenuItem.addActionListener(this);
 		
+		//Key shortcuts for the format menu
 		KeyStroke altW = KeyStroke.getKeyStroke(KeyEvent.VK_W, KeyEvent.ALT_DOWN_MASK);
 		wordWrapMenuItem.setAccelerator(altW);
 		KeyStroke altC = KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.ALT_DOWN_MASK);
@@ -133,10 +139,16 @@ public class SimpleTextEditor extends JFrame implements ActionListener{
 		
 		
 
-	//Edit Menu for things like "Undo" or "Redo" or else
+	// Edit Menu for things like "Undo" or "Redo"
+	// Undo/Redo All should undo/redo all actions that are saved up
 		JMenu editMenu = new JMenu("Edit");
 		JMenuItem undo = new JMenuItem("Undo");
+		JMenuItem undoAll = new JMenuItem("Undo All");
 		JMenuItem redo = new JMenuItem("Redo");
+		JMenuItem redoAll = new JMenuItem("Redo All");
+		
+		undo.addActionListener(this);
+		redo.addActionListener(this);
 		
 		editMenu.add(undo);
 		editMenu.add(redo);
@@ -148,15 +160,16 @@ public class SimpleTextEditor extends JFrame implements ActionListener{
 		
 		setJMenuBar(menuBar);
 		
+		//Initializing Editor Area and some utility variables
 		textArea = new JTextArea();
 		currentFont = textArea.getFont();
-		
-		JScrollPane scrollPane = new JScrollPane(textArea);
-		add(scrollPane);
-		
+		stringChangeManager = new StringChangeManager(textArea.getText());
 		fileChooser = new JFileChooser();
 		fileChooser.setFileFilter(new FileNameExtensionFilter("Text File", "txt"));
 		
+		//Adding area to scrollPane to make it visible
+		JScrollPane scrollPane = new JScrollPane(textArea);
+		add(scrollPane);
 	}
 	
 	
@@ -190,6 +203,18 @@ public class SimpleTextEditor extends JFrame implements ActionListener{
 		case "Background Color":
 			bgColor();
 			break;
+		case "Undo":
+			undo();
+			break;
+		case "Undo All":
+			undoAll();
+			break;
+		case "Redo":
+			redo();
+			break;
+		case "Redo All":
+			redoAll();
+			break;
 		case "Exit":
 			System.exit(0);
 			break;
@@ -199,7 +224,35 @@ public class SimpleTextEditor extends JFrame implements ActionListener{
 		
 	}
 	
-	public void fontColor() {
+	private void redoAll() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	private void redo() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	private void undoAll() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	private void undo() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	private void fontColor() {
 		Color initialcolor = textArea.getForeground();
  
     // color chooser Dialog Box
@@ -208,7 +261,7 @@ public class SimpleTextEditor extends JFrame implements ActionListener{
 		textArea.setForeground(color);
 	}
 	
-	public void bgColor() {
+	private void bgColor() {
 		Color initialcolor = textArea.getBackground();
  
     // color chooser Dialog Box
@@ -217,7 +270,7 @@ public class SimpleTextEditor extends JFrame implements ActionListener{
 		textArea.setBackground(color);
 	}
 	
-	public void fontChange() {
+	private void fontChange() {
 		JFrame frame;
 		JPanel topPanel;
 		JLabel lblTitle;
@@ -314,11 +367,11 @@ public class SimpleTextEditor extends JFrame implements ActionListener{
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
 
-	public void newFile() {
+	private void newFile() {
 		textArea.setText("");
 	}
 	
-	public void openFile() {
+	private void openFile() {
 		fileChooser.setDialogTitle("Open File");
 		fileChooser.setApproveButtonText("Open");
 		int returnValue = fileChooser.showOpenDialog(this);
@@ -333,7 +386,7 @@ public class SimpleTextEditor extends JFrame implements ActionListener{
 		}
 	}
 	
-	public void saveFile() {
+	private void saveFile() {
 		fileChooser.setDialogTitle("Save File");
 		fileChooser.setApproveButtonText("Save");
 		int returnValue = fileChooser.showOpenDialog(this);
