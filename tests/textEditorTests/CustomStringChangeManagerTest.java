@@ -90,6 +90,16 @@ class CustomStringChangeManagerTest {
 	}
 	
 	@Test
+	void testGetStringAtNotValidIndexReturnsEmptyString() {
+		String initialString = "";
+		CustomStringChangeManager stringManager = new CustomStringChangeManager(initialString);
+		String updatedString = initialString + "Updated";
+		stringManager.saveStringChange(updatedString);
+		
+		assertEquals("", stringManager.getStringAtIndex(-1));
+	}
+	
+	@Test
 	void testGetStringAtValidIndexDoesNotMoveTheCurrentKey() {
 		String initialString = "";
 		CustomStringChangeManager stringManager = new CustomStringChangeManager(initialString);
