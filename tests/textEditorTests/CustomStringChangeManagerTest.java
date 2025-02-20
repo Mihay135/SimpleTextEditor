@@ -57,4 +57,36 @@ class CustomStringChangeManagerTest {
 		assertEquals("Updated", stringManager.getNextString());
 	}
 	
+	@Test
+	void testHasNextStringOnEmptyStrings() {
+		String initialString = "";
+		CustomStringChangeManager stringManager = new CustomStringChangeManager(initialString);
+		
+		assertFalse(stringManager.hasNextString());
+	}
+	
+	@Test
+	void testHasNextStringReturnsTrueWhenThereIsAnotherStringNext() {
+		String initialString = "";
+		CustomStringChangeManager stringManager = new CustomStringChangeManager(initialString);
+		
+		String updatedString = initialString + "Updated";
+		stringManager.saveStringChange(updatedString);
+		
+		//Moving the current pointer back by 1 (currentKey--)
+		stringManager.getPreviousString();
+		
+		assertTrue(stringManager.hasNextString());
+	}
+	
+	@Test
+	void testGetStringAtValidIndex() {
+		String initialString = "";
+		CustomStringChangeManager stringManager = new CustomStringChangeManager(initialString);
+		String updatedString = initialString + "Updated";
+		stringManager.saveStringChange(updatedString);
+		
+		assertEquals("", stringManager.getStringAtIndex(0));
+	}
+	
 }

@@ -19,6 +19,10 @@ public class CustomStringChangeManager {
 		currentKey++;
 	}
 	
+	public String getStringAtIndex(Integer index) {
+		return changedStringVersions.getOrDefault(index, "");
+	}
+	
 	public String getPreviousString() {
 		currentKey = (currentKey == 0) ? 0 : currentKey - 1;
 		return changedStringVersions.getOrDefault(currentKey, "");
@@ -32,4 +36,13 @@ public class CustomStringChangeManager {
 	public String getCurrentString() {
 		return changedStringVersions.getOrDefault(currentKey, "");
 	}
+	
+	public boolean hasNextString() {
+		return currentKey < (nextEmptyKey - 1);
+	}
+	
+	public boolean hasPrevoiusString() {
+		return currentKey > 0;
+	}
+	
 }
