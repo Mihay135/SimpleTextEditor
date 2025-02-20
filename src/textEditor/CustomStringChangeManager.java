@@ -20,12 +20,16 @@ public class CustomStringChangeManager {
 	}
 	
 	public String getPreviousString() {
-		currentKey = (currentKey == 0) ? 0 : currentKey--;
+		currentKey = (currentKey == 0) ? 0 : currentKey - 1;
 		return changedStringVersions.getOrDefault(currentKey, "");
 	}
 	
 	public String getNextString() {
-		currentKey = (currentKey == (nextEmptyKey - 1)) ? currentKey : currentKey++;
+		currentKey = (currentKey == (nextEmptyKey - 1)) ? currentKey : currentKey + 1;
+		return changedStringVersions.getOrDefault(currentKey, "");
+	}
+	
+	public String getCurrentString() {
 		return changedStringVersions.getOrDefault(currentKey, "");
 	}
 }
