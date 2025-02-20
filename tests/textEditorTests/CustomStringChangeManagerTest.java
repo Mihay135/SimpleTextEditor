@@ -89,4 +89,15 @@ class CustomStringChangeManagerTest {
 		assertEquals("", stringManager.getStringAtIndex(0));
 	}
 	
+	@Test
+	void testGetStringAtValidIndexDoesNotMoveTheCurrentKey() {
+		String initialString = "";
+		CustomStringChangeManager stringManager = new CustomStringChangeManager(initialString);
+		String updatedString = initialString + "Updated";
+		stringManager.saveStringChange(updatedString);
+		stringManager.getStringAtIndex(0);
+		
+		assertEquals("Updated", stringManager.getCurrentString());
+	}
+	
 }
