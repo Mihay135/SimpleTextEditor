@@ -16,6 +16,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
@@ -38,6 +41,7 @@ import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import changeManager.ActionManager;
 import changeManager.StringChangeManager;
 
 public class SimpleTextEditor extends JFrame implements ActionListener{
@@ -50,7 +54,9 @@ public class SimpleTextEditor extends JFrame implements ActionListener{
 	private Font currentFont;
 	private boolean toggleWordWrap = false;
 	private Color defaultMenuBgColor = SystemColor.menu;
-	private StringChangeManager stringChangeManager;
+	private ActionManager actionManager;
+	private boolean newFileSaved = false;
+	private File openedFile;
 	
 	public SimpleTextEditor() {
 		setTitle("Simple Text Editor");
@@ -163,9 +169,11 @@ public class SimpleTextEditor extends JFrame implements ActionListener{
 		//Initializing Editor Area and some utility variables
 		textArea = new JTextArea();
 		currentFont = textArea.getFont();
-		stringChangeManager = new StringChangeManager(textArea.getText());
+		
 		fileChooser = new JFileChooser();
 		fileChooser.setFileFilter(new FileNameExtensionFilter("Text File", "txt"));
+		
+		actionManager = new ActionManager(textArea, new StringChangeManager(textArea.getText()));
 		
 		//Adding area to scrollPane to make it visible
 		JScrollPane scrollPane = new JScrollPane(textArea);
@@ -232,7 +240,7 @@ public class SimpleTextEditor extends JFrame implements ActionListener{
 
 
 	private void redo() {
-		// TODO Auto-generated method stub
+		actionManager.redo();
 		
 	}
 
@@ -246,7 +254,7 @@ public class SimpleTextEditor extends JFrame implements ActionListener{
 
 
 	private void undo() {
-		// TODO Auto-generated method stub
+		actionManager.undo();
 		
 	}
 
@@ -387,17 +395,31 @@ public class SimpleTextEditor extends JFrame implements ActionListener{
 	}
 	
 	private void saveFile() {
-		fileChooser.setDialogTitle("Save File");
-		fileChooser.setApproveButtonText("Save");
-		int returnValue = fileChooser.showOpenDialog(this);
-		
-		if (returnValue == JFileChooser.APPROVE_OPTION) {
-			File file = fileChooser.getSelectedFile();
-			try(BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-				textArea.write(writer);
-			} catch (IOException e) {
-				JOptionPane.showMessageDialog(this, "Error Saving file");
+		if(!newFileSaved) {
+			fileChooser.setDialogTitle("Save File");
+			fileChooser.setApproveButtonText("Save");
+			int returnValue = fileChooser.showOpenDialog(this);
+			
+			if (returnValue == JFileChooser.APPROVE_OPTION) {
+				openedFile = fileChooser.getSelectedFile();
+				try(BufferedWriter writer = new BufferedWriter(new FileWriter(openedFile))) {
+					textArea.write(writer);
+				} catch (IOException e) {
+					JOptionPane.showMessageDialog(this, "Error Saving file");
+				}
 			}
+			newFileSaved = true;
+		}else {
+			String filePath = openedFile.getAbsolutePath();
+			String stringToSave = textArea.getText();
+			actionManager.textChanged(stringToSave);
+			
+			try {
+				Files.writeString(Paths.get(filePath), stringToSave, StandardOpenOption.APPEND);
+			} catch (IOException e) {
+				// TODO: handle exception
+			}
+			
 		}
 	}
 }

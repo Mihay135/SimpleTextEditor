@@ -25,7 +25,8 @@ public class ActionManager {
 	}
 	
 	public void redo() {
-		
+		String next = stringChangeManager.getNextString();
+		textArea.setText(next);
 	}
 	
 	public void redoAll() {
