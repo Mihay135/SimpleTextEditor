@@ -11,14 +11,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
@@ -27,6 +23,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -377,6 +374,7 @@ public class SimpleTextEditor extends JFrame implements ActionListener{
 
 	private void newFile() {
 		textArea.setText("");
+		newFileSaved = false;
 	}
 	
 	private void openFile() {
@@ -388,38 +386,38 @@ public class SimpleTextEditor extends JFrame implements ActionListener{
 			File file = fileChooser.getSelectedFile();
 			try(BufferedReader reader = new BufferedReader(new FileReader(file))) {
 				textArea.read(reader, null);
+				newFileSaved = true;
+				openedFile = file;
+				reader.close();
 			} catch (IOException e) {
-				JOptionPane.showMessageDialog(this, "Error opening file");
+				JOptionPane.showMessageDialog(this, "Error opening file " + openedFile.getName());
 			}
 		}
 	}
 	
 	private void saveFile() {
-		if(!newFileSaved) {
+		if(newFileSaved == false) {
 			fileChooser.setDialogTitle("Save File");
 			fileChooser.setApproveButtonText("Save");
 			int returnValue = fileChooser.showOpenDialog(this);
-			
 			if (returnValue == JFileChooser.APPROVE_OPTION) {
 				openedFile = fileChooser.getSelectedFile();
-				try(BufferedWriter writer = new BufferedWriter(new FileWriter(openedFile))) {
-					textArea.write(writer);
-				} catch (IOException e) {
-					JOptionPane.showMessageDialog(this, "Error Saving file");
-				}
 			}
 			newFileSaved = true;
-		}else {
-			String filePath = openedFile.getAbsolutePath();
-			String stringToSave = textArea.getText();
-			actionManager.textChanged(stringToSave);
-			
-			try {
-				Files.writeString(Paths.get(filePath), stringToSave, StandardOpenOption.APPEND);
-			} catch (IOException e) {
-				// TODO: handle exception
-			}
-			
 		}
+		
+		String stringToSave = textArea.getText();
+		actionManager.textChanged(stringToSave);
+		FileWriter writer;
+		
+		try {
+			writer = new FileWriter(openedFile,false);
+			writer.write(stringToSave);
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, "Error saving file: "+openedFile.getName());
+		}
+			
 	}
 }
