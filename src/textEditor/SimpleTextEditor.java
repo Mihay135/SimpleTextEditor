@@ -259,19 +259,17 @@ public class SimpleTextEditor extends JFrame implements ActionListener{
 
 	private void fontColor() {
 		Color initialcolor = textArea.getForeground();
- 
-    // color chooser Dialog Box
 		Color color = JColorChooser.showDialog(this,
                 "Select a color", initialcolor);
+		
 		textArea.setForeground(color);
 	}
 	
 	private void bgColor() {
 		Color initialcolor = textArea.getBackground();
- 
-    // color chooser Dialog Box
 		Color color = JColorChooser.showDialog(this,
                 "Select a color", initialcolor);
+		
 		textArea.setBackground(color);
 	}
 	
@@ -396,28 +394,34 @@ public class SimpleTextEditor extends JFrame implements ActionListener{
 	}
 	
 	private void saveFile() {
+		//Check if this is a new file to be saved
 		if(newFileSaved == false) {
 			fileChooser.setDialogTitle("Save File");
 			fileChooser.setApproveButtonText("Save");
 			int returnValue = fileChooser.showOpenDialog(this);
 			if (returnValue == JFileChooser.APPROVE_OPTION) {
 				openedFile = fileChooser.getSelectedFile();
+			}else if(returnValue == JFileChooser.CANCEL_OPTION) {
+				newFileSaved = false;
+			}else {
+				newFileSaved = true;
 			}
-			newFileSaved = true;
-		}
-		
-		String stringToSave = textArea.getText();
-		actionManager.textChanged(stringToSave);
-		FileWriter writer;
-		
-		try {
-			writer = new FileWriter(openedFile,false);
-			writer.write(stringToSave);
-			writer.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, "Error saving file: "+openedFile.getName());
-		}
 			
+		}
+		
+		if(newFileSaved) {
+			String stringToSave = textArea.getText();
+			actionManager.textChanged(stringToSave);
+			FileWriter writer;
+			
+			try {
+				writer = new FileWriter(openedFile,false);
+				writer.write(stringToSave);
+				writer.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(this, "Error saving file: "+openedFile.getName());
+			}
+		}
 	}
 }
