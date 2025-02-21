@@ -37,7 +37,7 @@ public class StringChangeManager {
 	
 	public String getStringAtIndex(Integer index) {
 		int size = this.getNumberOfChanges();
-		String result = (index > size || index < 0) ? "" : changedStringVersions.get(index);
+		String result = (index > size || index < 0) ? "OUT" : changedStringVersions.get(index);
 		
 		return result;
 	}

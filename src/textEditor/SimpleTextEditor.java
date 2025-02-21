@@ -145,16 +145,28 @@ public class SimpleTextEditor extends JFrame implements ActionListener{
 	// Edit Menu for things like "Undo" or "Redo"
 	// Undo/Redo All should undo/redo all actions that are saved up
 		JMenu editMenu = new JMenu("Edit");
-		JMenuItem undo = new JMenuItem("Undo");
-		JMenuItem undoAll = new JMenuItem("Undo All");
-		JMenuItem redo = new JMenuItem("Redo");
-		JMenuItem redoAll = new JMenuItem("Redo All");
+		JMenuItem undoMenuItem = new JMenuItem("Undo");
+		KeyStroke ctrlZ = KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_DOWN_MASK);
+		undoMenuItem.setAccelerator(ctrlZ);
+		JMenuItem undoAllMenuItem = new JMenuItem("Undo All");
+		KeyStroke ctrlAltZ = KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK);
+		undoAllMenuItem.setAccelerator(ctrlAltZ);
+		JMenuItem redoMenuItem = new JMenuItem("Redo");
+		KeyStroke ctrlY = KeyStroke.getKeyStroke(KeyEvent.VK_Y, KeyEvent.CTRL_DOWN_MASK);
+		redoMenuItem.setAccelerator(ctrlY);
+		JMenuItem redoAllMenuItem = new JMenuItem("Redo All");
+		KeyStroke ctrlAltY = KeyStroke.getKeyStroke(KeyEvent.VK_Y, KeyEvent.CTRL_DOWN_MASK |KeyEvent.ALT_DOWN_MASK);
+		redoAllMenuItem.setAccelerator(ctrlAltY);
 		
-		undo.addActionListener(this);
-		redo.addActionListener(this);
+		undoMenuItem.addActionListener(this);
+		redoMenuItem.addActionListener(this);
+		undoAllMenuItem.addActionListener(this);
+		redoAllMenuItem.addActionListener(this);
 		
-		editMenu.add(undo);
-		editMenu.add(redo);
+		editMenu.add(undoMenuItem);
+		editMenu.add(undoAllMenuItem);
+		editMenu.add(redoMenuItem);
+		editMenu.add(redoAllMenuItem);
 		
 	//Menus Added to MenuBar
 		menuBar.add(fileMenu);
@@ -229,33 +241,21 @@ public class SimpleTextEditor extends JFrame implements ActionListener{
 		
 	}
 	
-	private void redoAll() {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-
 	private void redo() {
 		actionManager.redo();
-		
 	}
-
-
-
-	private void undoAll() {
-		// TODO Auto-generated method stub
-		
+	
+	private void redoAll() {
+		actionManager.redoAll();
 	}
-
-
 
 	private void undo() {
 		actionManager.undo();
-		
 	}
-
-
+	
+	private void undoAll() {
+		actionManager.undoAll();
+	}
 
 	private void fontColor() {
 		Color initialcolor = textArea.getForeground();
@@ -401,12 +401,11 @@ public class SimpleTextEditor extends JFrame implements ActionListener{
 			int returnValue = fileChooser.showOpenDialog(this);
 			if (returnValue == JFileChooser.APPROVE_OPTION) {
 				openedFile = fileChooser.getSelectedFile();
+				newFileSaved = true;
 			}else if(returnValue == JFileChooser.CANCEL_OPTION) {
 				newFileSaved = false;
-			}else {
-				newFileSaved = true;
-			}
 			
+			}
 		}
 		
 		if(newFileSaved) {

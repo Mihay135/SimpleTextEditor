@@ -21,7 +21,8 @@ public class ActionManager {
 	}
 	
 	public void undoAll() {
-		
+		String prev = stringChangeManager.getStringAtIndex(0);
+		textArea.setText(prev);
 	}
 	
 	public void redo() {
@@ -30,6 +31,9 @@ public class ActionManager {
 	}
 	
 	public void redoAll() {
+		int lastIndex = stringChangeManager.getNumberOfChanges();
+		String last = stringChangeManager.getStringAtIndex(lastIndex);
 		
+		textArea.setText(last);
 	}
 }
