@@ -36,6 +36,8 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import changeManager.ActionManager;
@@ -54,9 +56,11 @@ public class SimpleTextEditor extends JFrame implements ActionListener{
 	private ActionManager actionManager;
 	private boolean newFileSaved = false;
 	private File openedFile;
+	private SimpleTextEditor editor;
 	
 	public SimpleTextEditor() {
-		setTitle("Simple Text Editor");
+		editor = this;
+		setTitle("Simple Text Editor - New File*");
 		setSize(800,600);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -177,6 +181,7 @@ public class SimpleTextEditor extends JFrame implements ActionListener{
 		
 		//Initializing Editor Area and some utility variables
 		textArea = new JTextArea();
+		textArea.getDocument().addDocumentListener(new EditorDocumentListener(editor));
 		currentFont = textArea.getFont();
 		
 		fileChooser = new JFileChooser();
@@ -373,6 +378,7 @@ public class SimpleTextEditor extends JFrame implements ActionListener{
 	private void newFile() {
 		textArea.setText("");
 		newFileSaved = false;
+		editor.setTitle("Simple Text Editor - *New File");
 	}
 	
 	private void openFile() {
@@ -386,6 +392,7 @@ public class SimpleTextEditor extends JFrame implements ActionListener{
 				textArea.read(reader, null);
 				newFileSaved = true;
 				openedFile = file;
+				editor.setTitle("Simple Text Editor - "+openedFile.getName());
 				reader.close();
 			} catch (IOException e) {
 				JOptionPane.showMessageDialog(this, "Error opening file " + openedFile.getName());
@@ -402,6 +409,7 @@ public class SimpleTextEditor extends JFrame implements ActionListener{
 			if (returnValue == JFileChooser.APPROVE_OPTION) {
 				openedFile = fileChooser.getSelectedFile();
 				newFileSaved = true;
+				editor.setTitle("Simple Text Editor - "+ openedFile.getName());
 			}else if(returnValue == JFileChooser.CANCEL_OPTION) {
 				newFileSaved = false;
 			
